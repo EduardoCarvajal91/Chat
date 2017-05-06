@@ -12,8 +12,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.Inet4Address;
 import java.net.Socket;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.List;
 
@@ -116,7 +118,8 @@ public class ProcessRequestRunnable implements Runnable {
         // Dividir el request
         final String[] request3 = StringUtils.split(request);
 
-        // String from http protocol: "GET /chat HTTP/1.1"
+        //String from http protocol: "GET /chat HTTP/1.1"
+
 
         // Cada componente
         final String verbo = request3[0];
@@ -167,7 +170,10 @@ public class ProcessRequestRunnable implements Runnable {
         // Siempre el mismo comportamiento
         synchronized (chats) {
             for (String line : chats) {
-                sb.append(StringUtils.replace(chatline, "CONTENT", line));
+
+                final String lineCorrect = URLDecoder.decode(line, Charset.defaultCharset().name());
+
+                sb.append(StringUtils.replace(chatline, "CONTENT", lineCorrect));
                 sb.append("\r\n");
             }
         }
